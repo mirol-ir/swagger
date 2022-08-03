@@ -1,0 +1,4918 @@
+openapi: 3.0.0
+info:
+  version: 2.0.0
+  title: Mirol API
+  description: Mirol.ir API Documentation
+  termsOfService: https://mirol.ir/terms
+  contact:
+    name: Support
+    email: info@mirol.ir
+    url: https://mirol.ir/contact
+servers:
+  - url: https://api.mirol.ir/app/v2
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  responses:
+    ValidationError:
+      description: خطای اعتبارسنجی پارامتر های درخواست
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+    Unauthorized:
+      description: خطای تایید هویت کاربر
+    RateLimiter:
+      description: خطای تعداد درخواست بیش از حد مجاز
+    NotFound:
+      description: خطای یافت نشدن منبع مورد نظر
+    Forbidden:
+      description: خطای دسترسی به منبع مورد نظر
+  schemas:
+    ApiToken:
+      type: object
+      description: توکن وب سرویس
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 13
+        token:
+          type: string
+          description: توکن
+          example: 123abc456xyz
+        name:
+          type: string
+          description: نام اپلیکیشن استفاده کننده از توکن
+          example: myAppTitle
+        user_id:
+          type: integer
+          description: شناسه کاربر مالک
+          example: 33
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    BannedUser:
+      type: object
+      description: کاربر مسدودشده
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 12
+        user_id:
+          type: integer
+          description: شناسه کاربر مسدودشده
+          example: 33
+        operator_id:
+          type: integer
+          description: شناسه کاربر یا مدبر مسدود کننده
+          example: 33
+        is_handled:
+          type: boolean
+          description: وضعبت بررسی
+          example: 0
+        description:
+          type: string
+          description: توضیحات
+          example: به علت پخش محتوای غیر اخلاقی
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    Destination:
+      type: object
+      description: مقصد خروجی برای برنامه ها
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 13
+        name:
+          type: string
+          description: نام مقصد
+          example: آپارات تستی
+        type:
+          type: integer
+          description: |
+            نوع مقصد
+            * 1: CUSTOM
+            * 2: FACEBOOK
+            * 3: INSTAGRAM
+            * 4: YOUTUBE
+            * 5: TWITTER
+            * 6: TWITCH
+            * 7: APARAT
+            * 8: RUBIKA
+            * 9: SOROUSH
+            * 10: TEKYE
+          example: 3
+        rotation:
+          type: integer
+          description: |
+            * 0: صفر درجه - بدون تغییر
+            * 90: نود درجه
+          enum:
+            - 0
+            - 90
+          example: 0
+        proxy_status:
+          type: integer
+          description: |
+            وضعیت نیاز به پروکسی برای پلتفرم های فیلتر شده
+            * 1: فعال
+            * 2: غیرفعال
+          enum:
+            - 1
+            - 2
+          example: 2
+        ediatable:
+          type: integer
+          description: |
+            قابلیت مشاهده و ویرایش توسط کاربر
+            * 1: فعال
+            * 0: غیرفعال
+          enum:
+            - 0
+            - 1
+          example: 1
+        auto_connect:
+          type: integer
+          description: |
+            قابلیت اتصال خودکار مقصد در زمان شروع پخش
+            * 1: فعال
+            * 0: غیرفعال
+          enum:
+            - 0
+            - 1
+          example: 0
+        details:
+          type: object
+          description: جزئیات مقصد
+          properties:
+            comment_status:
+              type: integer
+              description: |
+                وضعیت دیدگاه برای مقصد های اینستاگرام
+                * 1: فعال
+                * 2: غیرفعال
+              enum:
+                - 1
+                - 2
+        user_id:
+          type: integer
+          description: شناسه کاربر مالک
+          example: 33
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    ContactMessage:
+      type: object
+      description: پیام ارتیاط با ما
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 13
+        name:
+          type: string
+          description: نام کاربر
+          example: روح‌الله
+        email:
+          type: string
+          nullable: true
+          description: ایمیل
+          example: ruhollah@gmail.com
+        subject:
+          type: string
+          description: موضوع
+          example: تقدیر و تشکر
+        content:
+          type: string
+          description: متن
+          example: با سلام ...
+        status:
+          type: integer
+          description: |
+            وضعیت
+            * 1: RECEIVED
+            * 2: HANDLING
+            * 3: HANDLED
+          example: 3
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    Company:
+      type: object
+      description: سازمان یا شرکت
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 13
+        title:
+          type: string
+          description: عنوان فارسی
+          example: شرکت میرول
+        name:
+          type: string
+          description: نام یکتا و انگلیسی
+          example: mirol
+        owner_id:
+          type: integer
+          description: شناسه کاربر مدیر شرکت یا سازمان
+          example: 33
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    Directory:
+      type: object
+      description: پوشه
+      properties:
+        path:
+          type: string
+          description: مسیر پوشه
+          example: /archive/1400/07/01
+        dirname:
+          type: string
+          description: نام پوشه
+          example: /archive
+        basename:
+          type: string
+          description: نام پوشه
+          example: archive
+        filename:
+          type: string
+          description: نام پوشه
+          example: archive
+        type:
+          type: string
+          description: نوع فایل یا پوشه
+          example: dir
+    File:
+      type: object
+      description: فایل
+      properties:
+        path:
+          type: string
+          description: مسیر فایل
+          example: /archive/1400/07/01/video.mp4
+        dirname:
+          type: string
+          description: نام پوشه
+          example: /archive/1400/07/01
+        basename:
+          type: string
+          description: نام فایل
+          example: video.mp4
+        extension:
+          type: string
+          description: پسوند فایل
+          example: mp4
+        filename:
+          type: string
+          description: نام فایل بدون پسوند
+          example: video
+        timestamp:
+          type: integer
+          description: زمان ساخته شدن فایل
+          example: 1633557383
+        size:
+          type: string
+          description: اندازه فایل
+          example: 2096221
+        storageclass:
+          type: string
+          description: کلاس ذخیره سازی
+          example: STANDARD
+        etag:
+          type: string
+          description: تگ فایل
+          example: 40c408dce8d102b55bddd688c3bb9534
+        type:
+          type: string
+          description: نوع فایل یا پوشه
+          example: file
+    Live:
+      type: object
+      description: پخش
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 13
+        server:
+          type: integer
+          description: کد سرور برنامه
+          example: 1
+        program_id:
+          type: integer
+          description: شناسه یکتا برنامه
+          example: 3
+        events:
+          type: array
+          description: رویداد های پخش
+          items:
+            $ref: '#/components/schemas/LiveEvent'
+        last_event:
+          type: integer
+          example: 1
+          description: |
+            نوع رویداد
+            0:
+            1: پایان یافته
+            2: با خطا رو به رو شده
+            3: متوقف شده توسط کاربر
+            4: متوقف شده توسط سازمان
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+        created_at:
+          type: string
+          description: زمان ایجاد پخش
+          example: '2021-10-06T07:07:55.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-10-06T07:07:55.000000Z'
+    LiveDestination:
+      type: object
+      description: مقصد پخش
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 13
+        destination_id:
+          type: integer
+          description: شناسه یکتای مقصد
+          example: 33
+        program_id:
+          type: integer
+          description: شناسه یکتای برنامه
+          example: 66
+        live_id:
+          type: integer
+          description: شناسه یکتای پخش
+          example: 99
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/LiveDestinationEvent'
+        last_event:
+          type: integer
+          description: |
+            نوع رویداد
+            1: پایان یافته
+            2: با خطا رو به رو شده
+            3: متوقف شده توسط کاربر
+            4: متوقف شده توسط سازمان
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+          example: 1
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-10-06T12:45:34.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-10-06T12:45:34.000000Z'
+    LiveDestinationEvent:
+      type: object
+      description: رویداد مقصد پخش
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتای رویداد
+          example: 364
+        live_destination_id:
+          type: integer
+          description: شناسه یکتای مقصد پخش
+          example: 365
+        type:
+          type: integer
+          description: |
+            نوع رویداد
+            1: پایان یافته
+            2: با خطا رو به رو شده
+            3: متوقف شده توسط کاربر
+            4: متوقف شده توسط سازمان
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+          example: 1
+        details:
+          type: object
+          properties:
+            length:
+              type: integer
+              description: طول زمان رویداد
+              example: 2654
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-10-06T13:29:48.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-10-06T13:29:48.000000Z'
+    LiveDestinationComment:
+      type: object
+      description: کامنت مقصد پخش
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتای کامنت
+          example: 364
+        live_destination_id:
+          type: integer
+          description: شناسه یکتای مقصد پخش
+          example: 365
+        details:
+          type: object
+          properties:
+            pinned:
+              type: boolean
+              description: سنجاق بودن یا نبود کامنت
+              example: true
+        comment:
+          type: object
+          properties:
+            text:
+              type: string
+              description: متن کامنت
+              example: سلام بسیار عالی
+            user:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: متن کامنت
+                  example: testlive
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-10-06T13:29:48.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-10-06T13:29:48.000000Z'
+    LiveDestinationViewer:
+      type: object
+      description: بیننده مقصد پخش
+      properties:
+        viewers:
+          type: array
+          items:
+            type: object
+            description: آیتم های رسید
+            properties:
+              username:
+                type: string
+                description: شناسه کاربر
+                example: testlive
+              full_name:
+                type: integer
+                description: نام کاربر
+                example: محمد
+    LiveEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتای رویداد
+          example: 573
+        live_id:
+          type: integer
+          description: شناسه یکتای پخش
+          example: 576
+        type:
+          type: integer
+          description: |
+            نوع رویداد
+            1: پایان یافته
+            2: با خطا رو به رو شده
+            3: متوقف شده توسط کاربر
+            4: متوقف شده توسط سازمان
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+          example: 3
+        details:
+          type: object
+          description: جزئیات پخش
+          properties:
+            length:
+              type: integer
+              description: طول پخشبه ثانیه
+              example: 3924
+        created_at:
+          type: string
+          description: زمان ایجاد رویداد
+          example: '2021-10-06T08:13:19.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-10-06T08:13:19.000000Z'
+    LiveReceipt:
+      type: object
+      description: رسید پخش
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 13
+        total:
+          type: integer
+          description: هزینه نهایی رسید
+          example: 660000
+        items:
+          type: object
+          description: آیتم های رسید
+          properties:
+            live_price:
+              type: integer
+              description: هزینه پایه پخش
+              example: 10000
+            live_length:
+              type: integer
+              description: مدت زمان پخش به ثانیه
+              example: 3600
+            free_destinations:
+              type: array
+              description: لیست مقصد های رایگان
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: شناسه یکتا
+                    example: 13
+                  name:
+                    type: string
+                    description: نام مقصد
+                    example: پخش اینستاگرام
+                  length:
+                    type: integer
+                    description: مدت زمان پخش به ثانیه
+                    example: 3600
+                  price:
+                    type: integer
+                    description: هزینه مقصد (صرفا جهت اطلاع!)
+                    example: 3600
+            paid_destinations:
+              type: array
+              description: لیست مقصد های غیر رایگان
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: شناسه یکتا
+                    example: 13
+                  name:
+                    type: string
+                    description: نام مقصد
+                    example: آپارات
+                  length:
+                    type: integer
+                    description: مدت زمان پخش به ثانیه
+                    example: 3600
+                  price:
+                    type: integer
+                    description: هزینه مقصد
+                    example: 3600
+            sum:
+              type: integer
+              description: جمع دقیق هزینه پخش و مقصد های غیر رایگان
+              example: 13
+        user_id:
+          type: integer
+          description: شناسه کاربر مالک
+          example: 33
+        live_id:
+          type: integer
+          description: شناسه پخش مربوطه
+          example: 33
+        program_id:
+          type: integer
+          description: شناسه برنامه مربوطه
+          example: 33
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    Operator:
+      type: object
+      description: مدیر یا اپراتور
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 13
+        user_id:
+          type: integer
+          description: شناسه کاربر مربوطه
+          example: 33
+        permissions:
+          type: string
+          description: دسترسی‌ها
+          example: mirol
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    StorageReceipt:
+      type: object
+      description: رسید فضای ابری
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 13
+        total:
+          type: integer
+          description: هزینه نهایی رسید
+          example: 660000
+        items:
+          type: object
+          description: آیتم های رسید
+          properties:
+            size:
+              type: integer
+              description: حجم مصرف شده به بایت
+              example: 1024
+            sum:
+              type: integer
+              description: جمع دقیق هزینه فضای ابری
+              example: 13
+        user_id:
+          type: integer
+          description: شناسه کاربر مالک
+          example: 33
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    Program:
+      type: object
+      description: برنامه
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 13
+        type:
+          type: integer
+          example: 1
+          description: |
+            نوع برنامه
+            * 1: RTMP
+            * 2: مسیر فایل از فضای ابری
+            * 3: لینک فایل یا برنامه
+          enum:
+            - 1
+            - 2
+            - 3
+        url:
+          type: string
+          description: آدرس جهت برنامه از نرم افزار های برنامهینگ
+          example: rtmp://program.mirol.tv/live/
+        key:
+          type: string
+          description: کلید برنامه جهت برنامه از نرم افزار های برنامهینگ
+          example: 123abc456xyz
+        public_url:
+          type: string
+          description: لینک پخش آنلاین تحت وب
+          example: https://play.mirol.ir/abc
+        public_hls:
+          type: string
+          description: آدرس مستقیم برنامه برای پلیر ها
+          example: https://play.mirol.ir/abc.m3u8
+        name:
+          type: string
+          description: نام برنامه
+          example: شب های برره
+        slug:
+          type: string
+          description: کد منحصر بفرد برای لینک پخش عمومی
+          example: 123abc456xyz
+        plan:
+          type: integer
+          description: |
+            پلن برنامه
+            1: رایگان
+            2: نقره ای
+            3: طلایی
+          enum:
+            - 1
+            - 2
+            - 3
+          example: 3
+        archive_status:
+          type: integer
+          description: |
+            وضعیت آرشیو برای ذخیره شدن ویدیوی نهایی در فضای ابری
+            1: فعال
+            2: غیرفعال
+          enum:
+            - 1
+            - 2
+        information:
+          type: object
+          nullable: true
+          properties:
+            file:
+              type: string
+              nullable: true
+              description: مسیر فایل برای نوع فایل
+            link:
+              type: string
+              nullable: true
+              description: لینک فایل یا برنامه برای نوع لینک
+        events:
+          type: array
+          description: رویداد های برنامه
+          items:
+            $ref: '#/components/schemas/ProgramEvent'
+        last_event:
+          type: integer
+          example: 1
+          description: |
+            نوع رویداد
+            * 1: پایان یافته توسط کاربر
+            * 2: پایان یافته توسط سازمان
+          enum:
+            - 1
+            - 2
+        user_id:
+          type: integer
+          description: شناسه کاربر مربوطه
+          example: 33
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    ProgramDestination:
+      type: object
+      description: مقصد برنامه
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 1
+        program_id:
+          type: integer
+          description: شناسه یکتای برنامه
+          example: 3
+        destination_id:
+          type: integer
+          description: شناسه یکتای مقصد
+          example: 1
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    ProgramEvent:
+      type: object
+      description: رویداد برنامه
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 573
+        program_id:
+          type: integer
+          description: شناسه یکتای برنامه
+          example: 576
+        type:
+          type: integer
+          description: |
+            نوع رویداد
+            * 1: پایان یافته توسط کاربر
+            * 2: پایان یافته توسط سازمان
+          enum:
+            - 1
+            - 2
+            - 3
+          example: 1
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-10-06T08:13:19.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-10-06T08:13:19.000000Z'
+    ProgramSchedule:
+      type: object
+      description: زمانبندی برنامه
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 533
+        program_id:
+          type: integer
+          description: شناسه یکتای برنامه
+          example: 3
+        start:
+          type: string
+          description: زمان شروع پخش
+          example: '2021-10-05T15:54:00.000000Z'
+        end:
+          type: string
+          description: زمان پایان پخش
+          example: '2021-10-05T15:57:00.000000Z'
+        events:
+          type: array
+          description: رویداد های زمانبندی برنامه
+          items:
+            $ref: '#/components/schemas/ProgramScheduleEvent'
+        last_event:
+          type: integer
+          example: 1
+          description: |
+            نوع رویداد
+            * 1: در حال شروع
+            * 2: شروع شده
+            * 3: متوقف شده
+            * 4: با خطا مواجه شده
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-10-05T15:53:35.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-10-05T15:53:35.000000Z'
+    ProgramScheduleEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 191
+        program_schedule_id:
+          type: integer
+          description: شناسه یکتای زمانبندی برنامه
+          example: 535
+        type:
+          type: integer
+          description: |
+            نوع رویداد
+            * 1: در حال شروع
+            * 2: شروع شده
+            * 3: متوقف شده
+            * 4: با خطا مواجه شده
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+          example: 3
+        details:
+          type: object
+          description: جزئیات رویداد
+          properties:
+            live:
+              type: integer
+              example: 571
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-10-05T16:31:03.000000Z'
+        updated_at:
+          type: string
+          description: زمان به روز رسانی
+          example: '2021-10-05T16:31:03.000000Z'
+    Report:
+      type: object
+      description: تیکت‌ها
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 23
+        header:
+          type: array
+          description: request header
+          example: [ ]
+        program_id:
+          type: integer
+          description: شناسه یکتای برنامه
+          example: 3
+        type:
+          type: integer
+          description: |
+            نوع
+            * 1: محتوای دلخراش و آزارد دهنده
+            * 2: محتوای تحریک آمیز جنسی
+            * 3: توهین به قومیت ها / محتوای نژاد پرستی
+            * 4: توهین به اقلیت های مذهبی
+            * 5: اهانت به مقامات سیاسی
+            * 6: اشاعه خشونت در جامعه
+            * 7: اشاعه کودک آزاری
+            * 8: قلدری و تهدید دیگران
+            * 9: محتوای نامناسب برای کودکان
+            * 10: عدم رعایت حق نشر
+            * 11: استفاده تبلیغاتی غیر مجاز
+            * 12: حیوان آزاری
+            * 13: سایر موارد
+
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
+            - 13
+          example: 9
+        content:
+          type: string
+          description: محتوا
+          example: 'پخش محتوای نامناسب و ...'
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    Ticket:
+      type: object
+      description: تیکت‌ها
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 23
+        user_id:
+          type: integer
+          description: شناسه کاربر سازنده تیکت
+          example: 13
+        title:
+          type: string
+          description: عنوان با موضوع تیکت
+          example: 'مشکل فنی در ...'
+        priority:
+          type: integer
+          enum:
+            - 1
+            - 2
+            - 3
+          description: |
+            اولویت تیکت
+            * 1: عادی
+            * 2: ضروری
+            * 3: بحرانی
+          example: 1
+        status:
+          type: integer
+          enum:
+            - 0
+            - 1
+            - 2
+          description: |
+            وضعیت تیکت
+            * 0: باز
+            * 1: پاسخ داده شده
+            * 2: بسته
+          example: 1
+        closed_at:
+          type: string
+          description: زمان بسته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    TicketMessage:
+      type: object
+      description: پیام های تیکت‌
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 23
+        user_id:
+          type: integer
+          description: شناسه کاربر
+          example: 13
+        ticket_id:
+          type: integer
+          description: شناسه  تیکت
+          example: 22
+        content:
+          type: string
+          description: متن پبام
+          example: 'سلام ...'
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    Transaction:
+      type: object
+      description: تراکنش مالی کاربر
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 13
+        value:
+          type: integer
+          description: مقدار ریالی تراکنش
+          example: 660000
+        last_balance:
+          type: integer
+          description: اعتبار نهایی کاربر مالک پس از تراکنش
+          example: 10000000
+        description:
+          type: string
+          description: توضیحات
+          example: بابت هزینه پخش
+        relation_type:
+          type: integer
+          description: |
+            نوع موجودیت عامل
+            * 1: تراکنش دستی توسط اپراتور
+            * 2: پرداخت آنلاین
+            * 3: کسر بابت هزینه پخش
+            * 4: کسر بابت هزینه فضای ابری
+          example: 1
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+        relation_id:
+          type: integer
+          description: شناسه موجودیت عامل
+          example: 66
+        user_id:
+          type: integer
+          description: شناسه کاربر مالک
+          example: 33
+        wallet_id:
+          type: integer
+          description: شناسه کیف پول مربوطه
+          example: 13
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    User:
+      description: کاربر
+      type: object
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 13
+        code:
+          type: string
+          description: کد یکتا
+          example: 123abc456xyz
+        first_name:
+          type: string
+          description: نام
+          example: میلاد
+        last_name:
+          type: string
+          description: نام خانوادگی
+          example: رحیمی
+        cellphone:
+          type: string
+          description: شماره همراه
+          example: '+989120001234'
+        cellphone_verified_at:
+          type: string
+          description: زمان تایید شماره همراه
+          example: '2021-09-26T16:13:07.000000Z'
+        email:
+          type: string
+          nullable: true
+          description: ایمیل
+          example: info@mirol.ir
+        email_verified_at:
+          type: string
+          nullable: true
+          description: زمان تایید ایمیل
+          example: '2021-09-26T16:13:07.000000Z'
+        status:
+          type: integer
+          enum:
+            - 1
+            - 2
+          description: |
+            وضعیت کاربر
+            * 1: فعال
+            * 2: بلاک شده
+          example: 1
+        has_password:
+          type: boolean
+          example: false
+        company_id:
+          type: integer
+          description: شناسه سازمان
+          example: 33
+        company:
+          $ref: '#/components/schemas/Company'
+        property:
+          $ref: '#/components/schemas/Company'
+        referrer_id:
+          type: integer
+          description: شناسه کاربر دعوت کننده
+          example: 66
+        wallets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Wallet'
+        created_at:
+          type: string
+          description: زمان نام نویسی
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    SignIn:
+      type: object
+      description: اطلاعات ورود کاربر
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 13
+        ip:
+          type: string
+          description: شناسه اینترنتی کاربر
+          example: 13.33.13.33
+        request:
+          type: string
+          description: اطلاعات درخواست کاربر
+          example: '{"headers": []}'
+        user_id:
+          type: integer
+          description: شناسه کاربر مربوطه
+          example: 33
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    UserToken:
+      type: object
+      description: توکن (نشست) کاربر
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 13
+        token:
+          type: string
+          description: توکن کاربر
+          example: 123abc456xyz
+        agent:
+          type: string
+          description: اطلاعات نرم افزار کلاینت کاربر
+          example: '{"os": "darwin"}'
+        user_id:
+          type: integer
+          description: شناسه کاربر مربوطه
+          example: 33
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+    Wallet:
+      type: object
+      description: کیف پول
+      properties:
+        id:
+          type: integer
+          description: شناسه یکتا
+          example: 13
+        type:
+          type: integer
+          description: |
+            نوع کیف پول
+            * 1: پیشفرض
+          example: 1
+          enum:
+            - 1
+        balance:
+          type: integer
+          description: اعتبار ریالی
+          example: 130000
+        user_id:
+          type: integer
+          description: شناسه کاربر مالک
+          example: 33
+        created_at:
+          type: string
+          description: زمان ساخته شدن
+          example: '2021-09-26T16:13:07.000000Z'
+        updated_at:
+          type: string
+          description: زمان آخرین بروزرسانی
+          example: '2021-09-26T16:13:07.000000Z'
+security:
+  - bearerAuth: [ ]
+tags:
+  - name: Auth
+    description: احراز هویت
+  - name: Profile
+    description: پروفایل کاربر
+  - name: UserTokens
+    description: توکن (نشت) های فعال کاربر
+  - name: ApiTokens
+    description: توکن های وب سرویس ها
+  - name: SignIns
+    description: ورود های کاربر
+  - name: Prices
+    description: قیمت دهی سرویس برای کاربر
+  - name: Wallets
+    description: کیف پول های کاربر جاری
+  - name: Transactions
+    description: تراکنش های کاربر جاری
+  - name: Ticket
+    description: تیکت های پشتیبانی
+  - name: Receipts
+    description: رسید های کاربر جاری
+  - name: Gateways
+    description: درگاه های پرداخت آنلاین
+  - name: Destinations
+    description: مقصد های خروجی
+  - name: Programs
+    description: برنامه ها
+  - name: ProgramDestinations
+    description: مقصد های برنامه ها
+  - name: LiveDestinations
+    description: مقصد های فعال
+  - name: LiveDestinationsViewers
+    description: بیننده های مقصد های فعال
+  - name: LiveDestinationsComments
+    description: دیدگاه های مقصد های فعال
+  - name: Lives
+    description: پخش ها
+  - name: Storage
+    description: فضای ابری
+  - name: Company
+    description: پنل سازمانی
+paths:
+  /auth/password/login:
+    post:
+      tags:
+        - Auth
+      description: ورود با گذرواژه
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - cellphone
+                - password
+              properties:
+                cellphone:
+                  type: string
+                  example: '+989120001234'
+                password:
+                  type: string
+                  example: 'secret'
+      responses:
+        '204':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  token:
+                    type: string
+                    description: token
+                    example: user:abcdefghijklmnopqrstuvwxyz
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /auth/otp/request:
+    post:
+      tags:
+        - Auth
+      description: درخواست ورود با پیامک
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - cellphone
+                - captcha
+              properties:
+                cellphone:
+                  type: string
+                  example: '+989120001234'
+                captcha:
+                  type: string
+                  example: 'abcdefghijklmnopqrstuvwxyz'
+      responses:
+        '204':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  expires_after:
+                    type: integer
+                    description: مدت اعتبار کد فرستاده شده به ثانیه
+                    example: 120
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /auth/otp/submit:
+    post:
+      tags:
+        - Auth
+      description: فرستادن کد تایید برای ورود
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - cellphone
+                - otp
+              properties:
+                cellphone:
+                  type: string
+                  example: '+989120001234'
+                otp:
+                  type: integer
+                  description: کد دریافت شده با پیامک
+                  example: '123456'
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /profile:
+    get:
+      tags:
+        - Profile
+      description: دریافت پروفایل کاربر
+      parameters:
+        - in: query
+          name: user
+          required: false
+          description: شناسه کاربر مورد نظر یا خالی برای کاربر جاری
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    put:
+      tags:
+        - Profile
+      description: ویرایش پروفایل کاربر
+      parameters:
+        - in: query
+          name: user
+          required: false
+          description: شناسه کاربر مورد نظر یا خالی برای کاربر جاری
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: میلاد
+                last_name:
+                  type: string
+                  example: رحیمی
+                email:
+                  type: string
+                  example: info@mirol.ir
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /profile/cellphone:
+    patch:
+      tags:
+        - Profile
+      description: درخواست تغییر شماره همراه کاربر
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - cellphone
+              properties:
+                cellphone:
+                  type: string
+                  example: '+989120001234'
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  expires_after:
+                    type: integer
+                    description: مدت اعتبار کد فرستاده شده به ثانیه
+                    example: 120
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /profile/cellphone/otp:
+    post:
+      tags:
+        - Profile
+      description: فرستادن کد تایید شماره همراه
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - otp
+                - cellphone
+              properties:
+                otp:
+                  type: integer
+                  description: کد دریافت شده با پیامک
+                  example: '123456'
+                cellphone:
+                  type: string
+                  example: '+989120001234'
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /profile/password:
+    patch:
+      tags:
+        - Profile
+      description: درخواست تغییر/افزودن شماره گذرواژه
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+                  description: گذرواژه
+                  example: 'secret69'
+                password_confirmation:
+                  type: string
+                  description: تکرار گذرواژه
+                  example: 'secret69'
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  expires_after:
+                    type: integer
+                    description: مدت اعتبار کد فرستاده شده به ثانیه
+                    example: 120
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /profile/password/otp:
+    post:
+      tags:
+        - Profile
+      description: فرستادن کد تایید برای تغییر کذرواژه
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - otp
+                - password
+              properties:
+                otp:
+                  type: integer
+                  description: کد دریافت شده با پیامک
+                  example: '123456'
+                password:
+                  type: string
+                  example: 'secret69'
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /user-tokens:
+    get:
+      tags:
+        - UserTokens
+      description: دریافت لیست توکن (نشست) های فعال کاربر جاری
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserToken'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /user-tokens/{id}:
+    delete:
+      tags:
+        - UserTokens
+      description: پاک کردن توکن (نشست) فعال کاربر جاری
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای توکن
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /api-tokens:
+    get:
+      tags:
+        - ApiTokens
+      description: دریافت توکن های فعال وب سرویس
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiToken'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    post:
+      tags:
+        - ApiTokens
+      description: ساخت توکن وب سرویس
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: نام اپلیکیشن استفاده کننده از توکن
+                  example: myAppName
+      responses:
+        '201':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiToken'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /api-tokens/{id}:
+    delete:
+      tags:
+        - ApiTokens
+      description: پاک کردن توکن فعال وب سرویس
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای توکن
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /sign-ins:
+    get:
+      tags:
+        - SignIns
+      description: دریافت اطلاعات ورود های پیشین
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SignIn'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /prices:
+    get:
+      tags:
+        - Prices
+      description: دریافت قیمت دهی سرویس برای کاربر
+      parameters:
+        - in: query
+          name: user
+          required: false
+          description: شناسه کاربر مورد نظر یا خالی برای کاربر جاری
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  storage:
+                    type: integer
+                    description: قیمت ریالی و روزانه هر گیگابایت در فضای ابری
+                    example: 3000
+                  live_base_gold:
+                    type: integer
+                    description: قیمت ریالی پخش پلن طلایی در هر دقیقه
+                    example: 6000
+                  live_destination_gold:
+                    type: integer
+                    description: قیمت ریالی مقصد اضافه پلن طلایی در هر دقیقه
+                    example: 3000
+                  live_base_silver:
+                    type: integer
+                    description: قیمت ریالی پخش پلن نقره در هر دقیقه
+                    example: 4000
+                  live_destination_silver:
+                    type: integer
+                    description: قیمت ریالی مقصد اضافه پلن نقره در هر دقیقه
+                    example: 2000
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /wallets:
+    get:
+      tags:
+        - Wallets
+      description: دریافت کیف پول های کاربر جاری
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Wallet'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /transactions:
+    get:
+      tags:
+        - Transactions
+      description: دریافت لیست تراکنش های کاربر جاری
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /receipts/lives:
+    get:
+      tags:
+        - Receipts
+      description: دریافت لیست رسید های پخش
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LiveReceipt'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /receipts/lives/{id}:
+    get:
+      tags:
+        - Receipts
+      description: دریافت رسید پخش
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای رسید پخش
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveReceipt'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /receipts/storage:
+    get:
+      tags:
+        - Receipts
+      description: دریافت لیست رسید های فضای ابری
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StorageReceipt'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /receipts/storage/{id}:
+    get:
+      tags:
+        - Receipts
+      description: دریافت رسید فضای ابری
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای رسید فضای ابری
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageReceipt'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /gateways:
+    get:
+      tags:
+        - Gateways
+      description: دریافت لیست درگاه های پرداخت فعال
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: array
+                description: نام درگاه های پرداخت
+                items:
+                  type: string
+                  example: mellat
+                  description: نام درگاه پرداخت
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /gateways/{gateway}/payment:
+    post:
+      tags:
+        - Gateways
+      description: درخواست پرداخت آنلاین برای شارژ کیف پول کاربر جاری
+      parameters:
+        - in: path
+          name: gateway
+          schema:
+            type: string
+          required: true
+          description: نام درگاه پرداخت
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+                - wallet
+              properties:
+                amount:
+                  type: integer
+                  description: مبلغ درخواستی جهت پرداخت
+                  example: 330000
+                wallet:
+                  type: string
+                  description: نام درگاه پرداخت درخواستی
+                  example: mellat
+      responses:
+        '201':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reference:
+                    type: string
+                    description: کد پیگیری از طرف درگاه پرداخت
+                    example: 123xyz456abc
+                  url:
+                    type: string
+                    description: آدرس صفحه درگاه جهت  تکمیل فرایند پرداخت
+                    example: https://shaparak.ir/path/to/gateway
+                  amount:
+                    type: integer
+                    description: مبلغ درخواست شده برای پرداخت
+                    example: 330000
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /gift-cards:
+    post:
+      tags:
+        - Gateways
+      description: درخواست شارژ کیف پول با استفاده از کارت هدیه
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - code
+                - captcha
+              properties:
+                code:
+                  type: integer
+                  description: کد درج شده روی کارت هدیه
+                  example: 13SFHJG13
+                captcha:
+                  type: string
+                  example: 'abcdefghijklmnopqrstuvwxyz'
+      responses:
+        '201':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: integer
+                    description: مبلغ کارت هدیه
+                    example: 4000000
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /destinations:
+    get:
+      tags:
+        - Destinations
+      description: دریافت لیست مقصد های کاربر جاری
+      parameters:
+        - in: query
+          name: user
+          required: false
+          description: شناسه کاربر مورد نظر یا خالی برای کاربر جاری
+          schema:
+            type: integer
+        - in: query
+          name: name
+          required: false
+          description: بخش یا نام کامل مقصد جهت جستجو
+          schema:
+            type: string
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Destination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    post:
+      tags:
+        - Destinations
+      description: ساخت مقصد جدید
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: integer
+                  description: نوع مقصد - رجوع شود به تعریف مدل مقصد
+                  example: 3
+                  enum:
+                    - 1
+                    - 2
+                    - 3
+                    - 4
+                    - 5
+                    - 6
+                    - 7
+                    - 8
+                    - 9
+                    - 10
+                name:
+                  type: string
+                  description: نام مقصد
+                  example: اینستاگرام تستی
+                user:
+                  type: integer
+                  description: >
+                    در صورت خالی فرستادن شناسه کاربر جاری در نظر گرفته میشود.
+
+                    در صورتی که از اکانت سازمانی فراخوانی شود میتواند شناسه یکی
+                    از کاربران سازمان باشد.
+                  example: 330000
+                rotation:
+                  type: integer
+                  description: |
+                    * 0: صفر درجه
+                    * 90: نود درجه
+                  enum:
+                    - 0
+                    - 90
+                  example: 90
+                proxy_status:
+                  type: integer
+                  description: |
+                    وضعیت نیاز به پروکسی برای پلتفرم های فیلتر شده
+                    * 1: فعال
+                    * 2: غیرفعال
+                  enum:
+                    - 1
+                    - 2
+                  example: 2
+                ediatable:
+                  type: integer
+                  description: |
+                    قابلیت مشاهده و ویرایش توسط کاربر
+                    * 1: فعال
+                    * 0: غیرفعال
+                  enum:
+                    - 0
+                    - 1
+                  example: 1
+                auto_connect:
+                  type: integer
+                  description: |
+                    قابلیت اتصال خودکار مقصد در زمان شروع پخش
+                    * 1: فعال
+                    * 0: غیرفعال
+                  enum:
+                    - 0
+                    - 1
+                  example: 0
+                details:
+                  type: object
+                  properties:
+                    comment_status:
+                      type: integer
+                      description: |
+                        وضعیت دیدگاه برای مقصد اینستاگرام
+                        * 1: فعال
+                        * 2: غیرفعال
+                      enum:
+                        - 1
+                        - 2
+                information:
+                  oneOf:
+                    - type: object
+                      description: اطلاعات برنامه
+                      properties:
+                        stream_url:
+                          type: string
+                        stream_key:
+                          type: string
+                    - type: object
+                      description: اطلاعات ورود به اینستاگرام
+                      properties:
+                        username:
+                          type: string
+                        password:
+                          type: string
+      responses:
+        '201':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Destination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /destinations/{id}:
+    get:
+      tags:
+        - Destinations
+      description: دریافت مقصد
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای مقصد
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Destination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    put:
+      tags:
+        - Destinations
+      description: ویرایش مقصد
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای مقصد
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: نام مقصد
+                  example: اینستاگرام تستی
+                rotation:
+                  type: integer
+                  example: 90
+                  description: |
+                    * 0: صفر درجه
+                    * 90: نود درجه
+                  enum:
+                    - 0
+                    - 90
+                proxy_status:
+                  type: integer
+                  example: 2
+                  description: |
+                    وضعیت نیاز به پروکسی برای پلتفرم های فیلتر شده
+                    * 1: فعال
+                    * 2: غیرفعال
+                  enum:
+                    - 1
+                    - 2
+                ediatable:
+                  type: integer
+                  description: |
+                    قابلیت مشاهده و ویرایش توسط کاربر
+                    * 1: فعال
+                    * 0: غیرفعال
+                  enum:
+                    - 0
+                    - 1
+                  example: 1
+                auto_connect:
+                  type: integer
+                  description: |
+                    قابلیت اتصال خودکار مقصد در زمان شروع پخش
+                    * 1: فعال
+                    * 0: غیرفعال
+                  enum:
+                    - 0
+                    - 1
+                  example: 0
+                details:
+                  type: object
+                  properties:
+                    comment_status:
+                      type: integer
+                      description: |
+                        وضعیت دیدگاه برای مقصد اینستاگرام
+                        * 1: فعال
+                        * 2: غیرفعال
+                      enum:
+                        - 1
+                        - 2
+                information:
+                  oneOf:
+                    - type: object
+                      description: اطلاعات برنامه
+                      properties:
+                        stream_url:
+                          type: string
+                        stream_key:
+                          type: string
+                    - type: object
+                      description: اطلاعات ورود به اینستاگرام
+                      properties:
+                        username:
+                          type: string
+                        password:
+                          type: string
+      responses:
+        '201':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Destination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    delete:
+      tags:
+        - Destinations
+      description: پاک کردن مقصد
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای مقصد
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /destinations/{id}/login:
+    get:
+      tags:
+        - Destinations
+      description: تست ورود به حساب مقصد مقصد
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: شناسه یکتای مقصد
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  2fa:
+                    type: boolean
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /destinations/{id}/2fa:
+    post:
+      tags:
+        - Destinations
+      description: تایید ورود دو مرحله ای به مقصد
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: شناسه یکتای مقصد
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  description: نوع مقصد - رجوع شود به تعریف مدل مقصد
+                  example: 333444
+      responses:
+        '204':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Destination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /programs:
+    get:
+      tags:
+        - Programs
+      description: دریافت لیست برنامه های کاربر جاری
+      parameters:
+        - in: query
+          name: user
+          required: false
+          description: شناسه کاربر مورد نظر یا خالی برای کاربر جاری
+          schema:
+            type: integer
+        - in: query
+          name: name
+          required: false
+          description: بخش یا نام کامل برنامه جهت جستجو
+          schema:
+            type: string
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Program'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    post:
+      tags:
+        - Programs
+      description: ساخت برنامه
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: integer
+                  nullable: true
+                  description: شناسه کاربر
+                  example: 13
+                type:
+                  type: integer
+                  example: 1
+                  description: |
+                    نوع برنامه
+                    * 1: RTMP
+                    * 2: مسیر فایل از فضای ابری
+                    * 3: لینک فایل یا برنامه
+                  enum:
+                    - 1
+                    - 2
+                    - 3
+                name:
+                  type: string
+                  description: نام برنامه
+                  example: کلیپ تبلیغاتی
+                plan:
+                  type: integer
+                  description: |
+                    پلن برنامه
+                    1: رایگان
+                    2: نقره ای
+                    3: طلایی
+                  enum:
+                    - 1
+                    - 2
+                    - 3
+                  example: 3
+                archive_status:
+                  type: integer
+                  description: |
+                    وضعیت آرشیو برای ذخیره شدن ویدیوی نهایی در فضای ابری
+                    1: فعال
+                    2: غیرفعال
+                  enum:
+                    - 1
+                    - 2
+                  example: 2
+                information:
+                  oneOf:
+                    - type: object
+                      nullable: true
+                      example: null
+                    - type: object
+                      properties:
+                        file:
+                          type: string
+                          nullable: true
+                          example: '/path/to/video.mp4'
+                          description: مسیر فایل برای نوع فایل
+                    - type: object
+                      properties:
+                        link:
+                          type: string
+                          example: 'https://example.com/program.m3u8'
+                          nullable: true
+                          description: لینک فایل یا برنامه برای نوع لینک
+      responses:
+        '201':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Destination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /programs/{id}:
+    get:
+      tags:
+        - Programs
+      description: دریافت برنامه
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای برنامه
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    put:
+      tags:
+        - Programs
+      description: ویرایش برنامه
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای برنامه
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: نام برنامه
+                  example: کلیپ تبلیغاتی
+                archive_status:
+                  type: integer
+                  description: |
+                    وضعیت آرشیو برای ذخیره شدن ویدیوی نهایی در فضای ابری
+                    1: فعال
+                    2: غیرفعال
+                  enum:
+                    - 1
+                    - 2
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    delete:
+      tags:
+        - Programs
+      description: پاک کردن برنامه
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای برنامه
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /programs/{id}/start:
+    patch:
+      tags:
+        - Programs
+      description: شروع پخش روی یک برنامه (مخصوص نوع فایل یا لینک)
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای برنامه
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /programs/{id}/finish:
+    patch:
+      tags:
+        - Programs
+      description: غیر فعال کردن برنامه
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای برنامه
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: نام برنامه
+                  example: شب های برره
+                archive_status:
+                  type: integer
+                  description: |
+                    وضعیت آرشیو برای ذخیره شدن ویدیوی نهایی در فضای ابری
+                    1: فعال
+                    2: غیرفعال
+                  enum:
+                    - 1
+                    - 2
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /programs/{id}/destinations:
+    get:
+      tags:
+        - Programs
+      description: دریافت مقصد های برنامه مورد نظر
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای برنامه
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Destination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    post:
+      tags:
+        - Programs
+      description: افزودن یک مقصد به برنامه
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای برنامه
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                destination:
+                  type: integer
+                  description: ای دی مقصدی که می خواهید به برنامه اضافه کنید
+                  example: '23'
+      responses:
+        '201':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProgramDestination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /programs/{program}/lives:
+    get:
+      tags:
+        - Programs
+      description: دریافت پخش های برنامه مورد نظر
+      parameters:
+        - in: path
+          name: program
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای برنامه
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Live'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /programs/{program}/schedules:
+    get:
+      tags:
+        - Programs
+      description: دریافت زمانبندی های یک برنامه
+      parameters:
+        - in: path
+          name: program
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای برنامه
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProgramSchedule'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    post:
+      tags:
+        - Programs
+      description: افزودن یک زمانبندی به برنامه
+      parameters:
+        - in: path
+          name: program
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای برنامه
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                programId:
+                  type: integer
+                  description: شناسه برنامه
+                  example: 3
+                start:
+                  type: string
+                  description: زمان شروع زمانبندی برنامه
+                  example: 2021/10/06 18:59:00
+                end:
+                  type: string
+                  description: زمان پایان زمانبندی برنامه این پارامتر اختیاری میباشد
+                  example: 2021/10/06 19:03:00
+      responses:
+        '201':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgramSchedule'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /programsSchedules/{id}:
+    delete:
+      tags:
+        - Programs
+      description: پاک کردن یک زمانبندی از برنامه
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه زمانبندی
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /programsDestinations/{id}:
+    delete:
+      tags:
+        - ProgramDestinations
+      description: پاک کردن یک مقصد از یک برنامه
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای مقصد برنامه
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /liveDestinations/{id}:
+    get:
+      tags:
+        - LiveDestinations
+      description: دریافت مقصد پخش
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای یک مقصد لایو
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LiveDestination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /liveDestinations/{id}/viewers:
+    get:
+      tags:
+        - LiveDestinationsViewers
+      description: دریافت لیست بیننده های مقصد  در لحظه
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای یک مقصد لایو
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LiveDestinationViewer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /liveDestinations/{id}/comments:
+    get:
+      tags:
+        - LiveDestinationsComments
+      description: دریافت لیست کامنت های مقصد پخش
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای یک مقصد لایو
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LiveDestinationComment'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - LiveDestinations
+      description: ارسال کامنت
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای یک مقصد لایو
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  description: متن کامنت
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /liveDestinations/{id}/comments/pin:
+    post:
+      tags:
+        - LiveDestinationsComments
+      description: سنجاق کردن کامنت
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای یک مقصد پخش
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: integer
+                  description: شناسه یکتای کامنت
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /liveDestinations/{id}/comments/unpin:
+    post:
+      tags:
+        - LiveDestinationsComments
+      description: حذف کامنت از سنجاق
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای یک مقصد پخش
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: integer
+                  description: شناسه یکتای کامنت
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /liveDestinations/{id}/comments/mute:
+    get:
+      tags:
+        - LiveDestinationsComments
+      description: بستن کامنت ها
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای یک مقصد پخش
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /liveDestinations/{id}/comments/unmute:
+    get:
+      tags:
+        - LiveDestinationsComments
+      description: باز کردن کامنت ها
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای یک مقصد پخش
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /lives/:
+    get:
+      tags:
+        - Lives
+      description: لیست پخش های کاربر جاری
+      parameters:
+        - in: query
+          name: status
+          required: false
+          description: ارسال active برای کرفتن لایو های فعال
+          schema:
+            type: string
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Live'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /lives/{id}:
+    get:
+      tags:
+        - Lives
+      description: دریافت جزئیات یک پخش
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای پخش
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Live'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /lives/{id}/stop:
+    patch:
+      tags:
+        - Lives
+      description: توقف یک پخش
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای پخش
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /lives/{id}/destinations:
+    get:
+      tags:
+        - Lives
+      description: دریافت مقصد های یک پخش
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای پخش
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LiveDestination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /storage/directories:
+    get:
+      tags:
+        - Storage
+      description: دریافت لیست فایل ها و پوشه های یک مسیر
+      parameters:
+        - in: query
+          name: user
+          required: false
+          description: شناسه کاربر مورد نظر یا خالی برای کاربر جاری
+          schema:
+            type: integer
+        - in: query
+          name: path
+          required: true
+          description: مسیر (پوشه) مورد نظر
+          schema:
+            type: string
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  directories:
+                    type: array
+                    description: لیست پوشه های موجود در مسیر
+                    items:
+                      $ref: '#/components/schemas/Directory'
+                  files:
+                    type: array
+                    description: لیست فایل های موجود در مسیر
+                    items:
+                      $ref: '#/components/schemas/File'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    post:
+      tags:
+        - Storage
+      description: ساخت پوشه در مسیر مورد نظر
+      parameters:
+        - in: query
+          name: user
+          required: false
+          description: شناسه کاربر مورد نظر یا خالی برای کاربر جاری
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                path:
+                  type: string
+                  description: مسیر مورد نظر
+                  example: /path/to
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    put:
+      tags:
+        - Storage
+      description: کپی یا جابجا کردن پوشه
+      parameters:
+        - in: query
+          name: user
+          required: false
+          description: شناسه کاربر مورد نظر یا خالی برای کاربر جاری
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                from:
+                  type: string
+                  description: مسیر پوشه
+                to:
+                  type: string
+                  description: مسیر جدید جهت کپی یا جابجایی
+                type:
+                  type: integer
+                  description: |
+                    نوع عملیات
+                    * 1: کپی
+                    * 2: جابجایی
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    delete:
+      tags:
+        - Storage
+      description: پاک کردن پوشه
+      parameters:
+        - in: query
+          name: user
+          required: false
+          description: شناسه کاربر مورد نظر یا خالی برای کاربر جاری
+          schema:
+            type: integer
+        - in: query
+          name: path
+          schema:
+            type: string
+          required: true
+          description: مسیر پوشه
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /storage/directories/size:
+    get:
+      tags:
+        - Storage
+      description: دریافت حجم پوشه به بایت
+      parameters:
+        - in: query
+          name: user
+          required: false
+          description: شناسه کاربر مورد نظر یا خالی برای کاربر جاری
+          schema:
+            type: integer
+        - in: query
+          name: path
+          description: مسیر (پوشه) مورد نظر
+          schema:
+            type: string
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  size:
+                    type: integer
+                    description: حجم پوشه به بایت
+                    example: 1024
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /storage/files:
+    get:
+      tags:
+        - Storage
+      description: دریافت اطلاعات فایل
+      parameters:
+        - in: query
+          name: user
+          required: false
+          description: شناسه کاربر مورد نظر یا خالی برای کاربر جاری
+          schema:
+            type: integer
+        - in: query
+          name: path
+          description: مسیر فایل
+          schema:
+            type: string
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    description: آدرس عمومی و موقت فایل جهت دانلود
+                    example: 'https://storage.mirol.ir/path/video.mp4'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    post:
+      tags:
+        - Storage
+      description: آپلود فایل در مسیر مورد نظر
+      parameters:
+        - in: query
+          name: user
+          required: false
+          description: شناسه کاربر مورد نظر یا خالی برای کاربر جاری
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - path
+                - file
+              properties:
+                path:
+                  type: string
+                  description: مسیر مورد نظر
+                  example: /path/to
+                file:
+                  type: string
+                  description: فایل
+                  format: binary
+      responses:
+        '201':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    put:
+      tags:
+        - Storage
+      description: کپی یا جابجا کردن فایل
+      parameters:
+        - in: query
+          name: user
+          required: false
+          description: شناسه کاربر مورد نظر یا خالی برای کاربر جاری
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - form
+                - to
+                - type
+              properties:
+                from:
+                  type: string
+                  description: مسیر فایل مورد نظر
+                  example: /path/from/video.mp4
+                to:
+                  type: string
+                  description: مسیر جدید جهت کپی یا جابجایی
+                  example: /path/to/video.mp4
+                type:
+                  type: integer
+                  example: 1
+                  description: |
+                    نوع عملیات
+                    * 1: کپی
+                    * 2: جابجایی
+                  enum:
+                    - 1
+                    - 2
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    delete:
+      tags:
+        - Storage
+      description: پاک کردن فایل از فضای ابری
+      parameters:
+        - in: query
+          name: user
+          required: false
+          description: شناسه کاربر مورد نظر یا خالی برای کاربر جاری
+          schema:
+            type: integer
+        - in: query
+          name: path
+          schema:
+            type: string
+          required: true
+          description: مسیر فایل
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /tickets:
+    get:
+      tags:
+        - Ticket
+      description: دریافت لیست تیکت های کاربر جاری
+      parameters:
+        - in: query
+          name: user
+          required: false
+          description: شناسه کاربر مورد نظر یا خالی برای کاربر جاری
+          schema:
+            type: integer
+        - in: query
+          name: title
+          required: false
+          description: 'عنوان تیکت'
+          schema:
+            type: string
+        - in: query
+          name: status
+          required: false
+          description: |
+            وضعیت تیکت
+            * 0: باز
+            * 1: پاسخ داده شده
+            * 2: بسته
+          schema:
+            type: integer
+        - in: query
+          name: priority
+          required: false
+          description: |
+            اولویت تیکت
+            * 1: عادی
+            * 2: ضروری
+            * 3: بحرانی
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Ticket'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    post:
+      tags:
+        - Ticket
+      description: ساخت تیکت
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: integer
+                  nullable: true
+                  description: شناسه کاربر
+                  example: 13
+                title:
+                  type: string
+                  description: عنوان با موضوع تیکت
+                  example: مشکل در ...
+                priority:
+                  type: integer
+                  example: 1
+                  description: |
+                    اولویت تیکت
+                    * 1: عادی
+                    * 2: ضروری
+                    * 3: بحرانی
+                  enum:
+                    - 1
+                    - 2
+                    - 3
+      responses:
+        '201':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /tickets/{id}:
+    get:
+      tags:
+        - Ticket
+      description: دریافت تیکت
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای تیکت
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Ticket'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /tickets/{id}/status:
+    patch:
+      tags:
+        - Ticket
+      description: نغییر وضعیت تیکت
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای تیکت
+        - in: query
+          name: status
+          required: true
+          description: |
+            وضعیت
+            * 1: باز
+            * 2: پاسخ داده شده
+            * 3: بسته
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Ticket'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /tickets/{id}/messages:
+    get:
+      tags:
+        - Ticket
+      description: دریافت لیست پیام های تیکت
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای تیکت
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TicketMessage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    post:
+      tags:
+        - Ticket
+      description: افزودن پیام به تیکت
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای تیکت
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  description: متن پبام
+                  example: 'سلام ....'
+      responses:
+        '201':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketMessage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /tickets/messages/file:
+    get:
+      tags:
+        - Ticket
+      description: دریافت url برای دانلود فابل
+      parameters:
+        - in: query
+          name: path
+          schema:
+            type: string
+          required: true
+          description: مسیر فایل
+      responses:
+        '200':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /company/profile:
+    get:
+      tags:
+        - Company
+      description: دریافت پروفایل سازمان
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /company/users:
+    get:
+      tags:
+        - Company
+      description: دریافت لیست کاربران سازمان
+      parameters:
+        - in: query
+          name: cellphone
+          required: false
+          description: شماره کاربر جهت جستجو
+          schema:
+            type: string
+        - in: query
+          name: company
+          required: false
+          description: شناسه یکتای شرکت
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    post:
+      tags:
+        - Company
+      description: نام نویسی یک کاربر تازه در سازمان
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - first_name
+                - last_name
+                - cellphone
+              properties:
+                first_name:
+                  type: string
+                  description: نام
+                  example: میلاد
+                last_name:
+                  type: string
+                  description: نام خانوادگی
+                  example: رحیمی
+                email:
+                  type: string
+                  description: ایمیل
+                  example: info@mirol.ir
+                cellphone:
+                  type: string
+                  description: شماره همراه
+                  example: +989120001234
+                is_company_user:
+                  type: boolean
+                  description: عضویت یا عدم عضویت کاربر در سازمان
+                is_referred_user:
+                  type: boolean
+                  description: زیرمجموعه یا عدم زیرمجموعه بودن کاربر
+
+      responses:
+        '201':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /company/users/{user}/password:
+    patch:
+      tags:
+        - Company
+      description: تغییر گذرواژه کاربر
+      parameters:
+        - in: path
+          name: user
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای کاربر
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+                  description: گذرواژه
+                  example: 'secret69'
+                password_confirmation:
+                  type: string
+                  description: تکرار گذرواژه
+                  example: 'secret69'
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /company/users/{user}/ban:
+    patch:
+      tags:
+        - Company
+      description: مسدود کردن کاربر
+      parameters:
+        - in: path
+          name: user
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای کاربر
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - until
+              properties:
+                until:
+                  type: string
+                  description: زمان انتهای مسدود شدن
+                  example: 2023/10/06 18:59:00
+                description:
+                  type: string
+                  description: توضیحات
+                  example: 'کار بد'
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /company/users/{user}/unban:
+    patch:
+      tags:
+        - Company
+      description: مسدود کردن کاربر
+      parameters:
+        - in: path
+          name: user
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای کاربر
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /company/banned-users:
+    get:
+      tags:
+        - Company
+      description: دریافت لیست کاربران مسدود سازمان
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BannedUser'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /company/programs:
+    get:
+      tags:
+        - Company
+      description: دریافت لیست برنامه های کاربران سازمان
+      parameters:
+        - in: query
+          name: name
+          required: false
+          description: بخش یا نام کامل برنامه جهت جستجو
+          schema:
+            type: string
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Program'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /company/lives/:
+    get:
+      tags:
+        - Company
+      description: دریافت لیست پخش های کلربران سازمان
+      parameters:
+        - in: query
+          name: status
+          required: false
+          description: ارسال active برای کرفتن لایو های فعال
+          schema:
+            type: string
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Live'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /company/destinations:
+    get:
+      tags:
+        - Company
+      description: دریافت لیست مقصد های کاربران سازمان
+      parameters:
+        - in: query
+          name: name
+          required: false
+          description: بخش یا نام کامل مقصد جهت جستجو
+          schema:
+            type: string
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Destination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /company/tickets:
+    get:
+      tags:
+        - Company
+      description: دریافت لیست تیکت های کاربران سازمان
+      parameters:
+        - in: query
+          name: title
+          required: false
+          description: 'عنوان تیکت'
+          schema:
+            type: string
+        - in: query
+          name: status
+          required: false
+          description: |
+            وضعیت تیکت
+            * 0: باز
+            * 1: پاسخ داده شده
+            * 2: بسته
+          schema:
+            type: integer
+        - in: query
+          name: priority
+          required: false
+          description: |
+            اولویت تیکت
+            * 1: عادی
+            * 2: ضروری
+            * 3: بحرانی
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Ticket'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/most-valuable-users:
+    get:
+      tags:
+        - admin
+      description: دریافت لیست کاربران ویژه
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: شناسه یکتای کاربر
+                          example: 13
+                        first_name:
+                          type: string
+                          description: نام
+                          example: میلاد
+                        last_name:
+                          type: string
+                          description: نام خانوادگی
+                          example: رحیمی
+                        cellphone:
+                          type: string
+                          description: شماره همراه
+                          example: +989120001234
+                        value:
+                          type: integer
+                          description: مجموع پرداخت‌ها
+                          example: 360000
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/users:
+    get:
+      tags:
+        - admin
+      description: دریافت لیست کاربران
+      parameters:
+        - in: query
+          name: cellphone
+          required: false
+          description: شماره کاربر جهت جستجو
+          schema:
+            type: string
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    post:
+      tags:
+        - admin
+      description: نام نویسی یک کاربر تازه در سازمان
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - first_name
+                - last_name
+                - cellphone
+              properties:
+                company:
+                  type: integer
+                  description: شناسه سازمان مربوطه
+                  example: 33
+                first_name:
+                  type: string
+                  description: نام
+                  example: میلاد
+                last_name:
+                  type: string
+                  description: نام خانوادگی
+                  example: رحیمی
+                email:
+                  type: string
+                  description: ایمیل
+                  example: info@mirol.ir
+                cellphone:
+                  type: string
+                  description: شماره همراه
+                  example: +989120001234
+                balance:
+                  type: integer
+                  description: موجودی اولیه کاربر به ریال
+                  example: 100
+
+      responses:
+        '201':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/users/{user}/password:
+    patch:
+      tags:
+        - admin
+      description: تغییر گذرواژه کاربر
+      parameters:
+        - in: path
+          name: user
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای کاربر
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+                  description: گذرواژه
+                  example: 'secret69'
+                password_confirmation:
+                  type: string
+                  description: تکرار گذرواژه
+                  example: 'secret69'
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+
+  /admin/users/{user}/ban:
+    patch:
+      tags:
+        - admin
+      description: مسدود کردن کاربر
+      parameters:
+        - in: path
+          name: user
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای کاربر
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - until
+              properties:
+                until:
+                  type: string
+                  description: زمان انتهای مسدود شدن
+                  example: 2023/10/06 18:59:00
+                description:
+                  type: string
+                  description: توضیحات
+                  example: 'کار بد'
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/users/{user}/unban:
+    patch:
+      tags:
+        - admin
+      description: مسدود کردن کاربر
+      parameters:
+        - in: path
+          name: user
+          schema:
+            type: integer
+          required: true
+          description: شناسه یکتای کاربر
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/banned-users:
+    get:
+      tags:
+        - admin
+      description: دریافت لیست کاربران مسدود
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BannedUser'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/programs:
+    get:
+      tags:
+        - admin
+      description: دریافت لیست برنامه های کاربران سازمان
+      parameters:
+        - in: query
+          name: name
+          required: false
+          description: بخش یا نام کامل برنامه جهت جستجو
+          schema:
+            type: string
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Program'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/lives/:
+    get:
+      tags:
+        - admin
+      description: دریافت لیست پخش های کلربران سازمان
+      parameters:
+        - in: query
+          name: status
+          required: false
+          description: ارسال 0 برای کرفتن لایو های فعال
+          schema:
+            type: string
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Live'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/destinations:
+    get:
+      tags:
+        - admin
+      description: دریافت لیست مقصد های کاربران سازمان
+      parameters:
+        - in: query
+          name: name
+          required: false
+          description: بخش یا نام کامل مقصد جهت جستجو
+          schema:
+            type: string
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Destination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/companies:
+    get:
+      tags:
+        - admin
+      description: دریافت لیست سازمان‌ها
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Company'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/transactions:
+    get:
+      tags:
+        - admin
+      description: دریافت لیست تراکنش های کاربران
+      parameters:
+        - in: query
+          name: type
+          required: false
+          description: ارسال 2 برای گرفتن پرداخت ها
+          schema:
+            type: string
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+    post:
+      tags:
+        - admin
+      description: افزودن تراکنش دستی
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user
+                - value
+              properties:
+                user:
+                  type: integer
+                  nullable: true
+                  description: شناسه کاربر
+                  example: 13
+                value:
+                  type: integer
+                  description: مقدار ریالی تراکنش
+                  example: 660000
+                description:
+                  type: string
+                  description: توضیحات
+                  example: pay to mellat account from 123454234
+      responses:
+        '201':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/Transaction'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/tickets:
+    get:
+      tags:
+        - admin
+      description: دریافت لیست تیکت های کاربران
+      parameters:
+        - in: query
+          name: title
+          required: false
+          description: 'عنوان تیکت'
+          schema:
+            type: string
+        - in: query
+          name: status
+          required: false
+          description: |
+            وضعیت تیکت
+            * 0: باز
+            * 1: پاسخ داده شده
+            * 2: بسته
+          schema:
+            type: integer
+        - in: query
+          name: priority
+          required: false
+          description: |
+            اولویت تیکت
+            * 1: عادی
+            * 2: ضروری
+            * 3: بحرانی
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Ticket'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/messages:
+    get:
+      tags:
+        - admin
+      description: دریافت لیست پیام های ارتباط با ما
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ContactMessage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/messages/{id}:
+    delete:
+      tags:
+        - admin
+      description: پاک کردن پیام ارتباط با ما
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/reports:
+    get:
+      tags:
+        - admin
+      description: دریافت گزارشات کاربران برای برنامه ها
+      responses:
+        '200':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Report'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/reports/{id}:
+    delete:
+      tags:
+        - admin
+      description: پاک کردن گزارش کاربر
+      responses:
+        '204':
+          description: پاسخ موفق
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
+  /admin/gift-cards:
+    post:
+      tags:
+        - admin
+      description: ساخت کد هدیه
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - value
+                - count
+                - title
+              properties:
+                value:
+                  type: integer
+                  description: مبلغ کد هدیه
+                  example: 20000
+                count:
+                  type: integer
+                  description: تعداد کد های مورد نیاز
+                  example: 100
+                title:
+                  type: string
+                  description: عنوان کد
+                  example: exhabition
+      responses:
+        '201':
+          description: پاسخ موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  path:
+                    type: string
+                    description: مسیر فایل کد های هدیه
+                    example: "/app/public/outputs/gift_card_exhabition.csv"
+                  codes:
+                    type: array
+                    items:
+                      type: string
+                      example: M3D2119
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimiter'
